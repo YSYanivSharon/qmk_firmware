@@ -27,11 +27,13 @@ enum layers{
 
 enum custom_keycodes {
     KC_CAPS_BACKLIGHT = SAFE_RANGE,
-    KC_CAPS_WORD_BACKLIGHT
+    KC_CAPS_WORD_BACKLIGHT,
+    KC_RESET
 };
 
 #define KC_CBL  KC_CAPS_BACKLIGHT
 #define KC_CWBL KC_CAPS_WORD_BACKLIGHT
+#define KC_RST  KC_RESET
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [MAC_BASE] = LAYOUT_all(
@@ -53,22 +55,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,  _______,  _______),
 
     [WIN_BASE] = LAYOUT_all(
-                                                                                                                                                            KC_VOLD, KC_VOLU,
+                                                                                                                                                               KC_VOLD, KC_VOLU,
         KC_GRV    ,  KC_F1,    KC_F2,    KC_F3,    KC_F4,    KC_F5,    KC_F6,    KC_F7,    KC_F8,    KC_F9,    KC_F10,   KC_F11    , KC_F12,   KC_CWBL,            KC_MUTE,
-        KC_ESC    ,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS   , KC_EQL,   KC_BSPC,            KC_PGUP,
-        KC_TAB    ,  KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC   , KC_RBRC,  KC_BSLS,            KC_PGDN,
-        MO(WIN_FN),  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT   ,           KC_ENT,             KC_HOME,
+        KC_ESC    ,  KC_1,     KC_2,     KC_3,     KC_4,     KC_5,     KC_6,     KC_7,     KC_8,     KC_9,     KC_0,     KC_MINS   , KC_EQL,   KC_BSPC,            KC_PSCR,
+        KC_TAB    ,  KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,     KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,     KC_LBRC   , KC_RBRC,  KC_BSLS,            XXXXXXX,
+        MO(WIN_FN),  KC_A,     KC_S,     KC_D,     KC_F,     KC_G,     KC_H,     KC_J,     KC_K,     KC_L,     KC_SCLN,  KC_QUOT   ,           KC_ENT,             XXXXXXX,
         KC_LSFT   ,            KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,     KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH   ,           KC_RSFT,  KC_UP,
-        KC_LCTL   ,  KC_LGUI,  KC_LALT,                                KC_SPC,                                 KC_RALT,  MO(WIN_FN), KC_MENU,  KC_LEFT,  KC_DOWN,  KC_RGHT),
+        KC_LCTL   ,  KC_LGUI,  KC_LALT,                                KC_SPC,                                 KC_RALT,  MO(WIN_FN), KC_APP,   KC_LEFT,  KC_DOWN,  KC_RGHT),
 
     [WIN_FN] = LAYOUT_all(
-                                                                                                                                                            KC_MRWD, KC_MFFD,
-        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  KC_CBL ,            KC_MPLY,
-        _______,  _______,  _______,  _______,  KC_END ,  _______,  KC_HOME,  _______,  _______,  _______,  _______,  _______,    _______,  KC_DEL ,            _______,
-        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  _______,            _______,
-        _______,  _______,  _______,  _______,  _______,  _______,  KC_LEFT,  KC_DOWN,  KC_UP  ,  KC_RGHT,  _______,  _______,              _______,            _______,
-        _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              _______,  _______,
-        _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,  _______,  _______),
+                                                                                                                                                                 KC_MRWD, KC_MFFD,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,    _______,  KC_CBL ,                 KC_MPLY,
+        _______,  _______,  _______,  _______,  KC_END ,  _______,  KC_HOME,  _______,  _______,  _______,  _______,  _______,    _______,  KC_DEL ,                 KC_RST,
+        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC_PSCR,  _______,    _______,  _______,                 KC_RST,
+        _______,  _______,  _______,  _______,  _______,  _______,  KC_LEFT,  KC_DOWN,  KC_UP  ,  KC_RGHT,  _______,  _______,              _______,                 KC_RST,
+        _______,            _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,              RCTL(KC_RSFT), _______,
+        _______,  _______,  _______,                                _______,                                _______,  _______,    _______,  _______,       _______,  _______),
 };
 
 // clang-format on
@@ -118,45 +120,69 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 void caps_word_set_user(bool active);
 void set_caps_rgb_state(void);
 
+// The capslock states
 enum caps_state {
     inactive = 0,
     active = 1,
     word = 2
 };
 
+// The current capslock state
 int caps_state = inactive;
+
+// The count of pressed down reset keys (KC_RESET)
+int reset_down_count = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KC_CAPS_BACKLIGHT:
             if (record->event.pressed) {
+                // Handles capslock according to its current state
                 switch (caps_state)
                 {
                     case inactive:
+                        // If capslock is off, enable it
                         tap_code(KC_CAPS);
                         caps_state = active;
                         break;
                     case active:
+                        // If capslock is on, disable it
                         tap_code(KC_CAPS);
                         caps_state = inactive;
                         break;
                     case word:
+                        // If caps word is on, disable it
                         caps_word_off();
                         caps_state = inactive;
                         break;
                 }
+
+                // Update rgb state to signal if capslock is on
                 set_caps_rgb_state();
             }
             return false;
         case KC_CAPS_WORD_BACKLIGHT:
             if (record->event.pressed) {
+                // Activates caps word only when capslock is off
                 if (caps_state == inactive) {
                     caps_word_on();
                 }
             }
             return false;
+        case KC_RESET:
+            if (record->event.pressed) {
+                reset_down_count++;
+
+                if (reset_down_count == 3) {
+                    reset_keyboard();
+                }
+            } else {
+                reset_down_count--;
+            }
+            return false;
         default:
-            return true;  // Process all other keycodes normally
+            // Process all other keycodes normally
+            return true;
     }
 }
 
